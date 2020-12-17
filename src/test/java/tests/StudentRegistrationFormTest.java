@@ -11,6 +11,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
 import java.util.Locale;
@@ -23,16 +24,12 @@ import static helpers.AttachmentsHelper.*;
 import static io.qameta.allure.Allure.step;
 
 public class StudentRegistrationFormTest {
-
-    Faker faker = new Faker();
-    FakeValuesService fakeValuesService = new FakeValuesService(new Locale("en-GB"), new RandomService());
-
-
-
     @BeforeAll
     static void setUp() {
         addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
+//        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud:4444/wd/hub/";
         Configuration.startMaximized = true;
+
     }
     @AfterEach
     @Step("Attachments")
@@ -43,6 +40,9 @@ public class StudentRegistrationFormTest {
         attachVideo();
         closeWebDriver();
     }
+
+    Faker faker = new Faker();
+    FakeValuesService fakeValuesService = new FakeValuesService(new Locale("en-GB"), new RandomService());
 
     @Test
     @Owner("Telepnev")
