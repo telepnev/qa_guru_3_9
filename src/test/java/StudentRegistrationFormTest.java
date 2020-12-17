@@ -1,4 +1,3 @@
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
@@ -25,6 +24,11 @@ public class StudentRegistrationFormTest {
     String lastName = faker.name().lastName();
     String userEmail = fakeValuesService.bothify("????##@mail.ru");
     String userMobile = fakeValuesService.regexify("[1-9]{10}");
+    String gender = "Female";
+    String dayOfBirth = "31";
+    String monthOfBirth = "March";
+    String yearOfBirth = "1983";
+
     String currentAddress = faker.address().fullAddress();
     String picture = "test.jpg";
     String state = "Haryana";
@@ -38,32 +42,54 @@ public class StudentRegistrationFormTest {
     @Test
     @Owner("Telepnev")
     @DisplayName("Successful fill registration form")
-     void successfulFillFormTest() {
+    void successfulFillFormTest() {
 
         open("https://demoqa.com/automation-practice-form");
         $("h5").shouldHave(text("Student Registration Form"));
-        step("Fill in the Name field", () ->{$("#firstName").val(firstName).pressTab();
-            $("#lastName").val(lastName).pressTab();});
+        step("Fill in the Name field", () -> {
+            $("#firstName").val(firstName).pressTab();
+            $("#lastName").val(lastName).pressTab();
+        });
         step("Fill in the Name field", () -> $("#userEmail").val(userEmail));
-        step("Choose a Gender 'Male'", () ->{});
+        step("Choose a Gender 'Male'", () -> {
+        });
         $(byText("Female")).click();
         step("Fill in the Mobile field", () -> $("#userNumber").val(userMobile));
-        step("Select date Of Birth 'March 1983 31'", () ->{$("#dateOfBirthInput").click();
-            $(".react-datepicker__month-select").selectOption("March");
-            $(".react-datepicker__year-select").selectOption("1983");
-            $(byText("31")).click();});
+        step("Select date Of Birth 'March 1983 31'", () -> {
+            $("#dateOfBirthInput").click();
+            $(".react-datepicker__month-select").selectOption(monthOfBirth);
+            $(".react-datepicker__year-select").selectOption(yearOfBirth);
+            $(byText(dayOfBirth)).click();
+        });
         step("Fill in the Subjects", () -> $("#subjectsInput").val("Computer Science").pressEnter());
         step("Choose a Hobbies 'Music'", () -> $(byText("Music")).click());
         step("Upload the Picture", () -> $("#uploadPicture").uploadFile(new File("src/test/resources/" + picture)));
         step("Fill in the 'Current Address' field", () -> $("#currentAddress").val(currentAddress)).click();
-        step("Select State and City", () ->{$(byText("Select State")).scrollTo();
+        step("Select State and City", () -> {
+            $(byText("Select State")).scrollTo();
             $(byText("Select State")).click();
             $("#stateCity-wrapper").$(byText(state)).click();
             $(byText("Select City")).click();
-            $("#stateCity-wrapper").$(byText(city)).click();});
-        step("Click to Submit", () ->{$(byText("Submit")).scrollTo();
-            $(byText("Submit")).click();});
-        step("Close submitting form", () ->{$(".modal-header").shouldHave(text("Thanks for submitting the form"));
-            $("#closeLargeModal").click();});
-     }
+            $("#stateCity-wrapper").$(byText(city)).click();
+        });
+        step("Click to Submit", () -> {
+            $(byText("Submit")).scrollTo();
+            $(byText("Submit")).click();
+        });
+
+        step("Verify successful form submit", () -> {
+            $(".modal-header").shouldHave(text("Thanks for submitting the form"));
+            $x("//td[text()='Student Name']").parent().shouldHave(text(firstName + " " + lastName));
+            $x("//td[text()='Student Email']").parent().shouldHave(text(userEmail));
+            $x("//td[text()='Gender']").parent().shouldHave(text(gender));
+            $x("//td[text()='Mobile']").parent().shouldHave(text(userMobile));
+            $x("//td[text()='Date of Birth']").parent().shouldHave(text(dayOfBirth + " " + monthOfBirth + "," + yearOfBirth));
+            $x("//td[text()='Picture']").parent().shouldHave(text(picture));
+            $x("//td[text()='Address']").parent().shouldHave(text(currentAddress));
+            $x("//td[text()='State and City']").parent().shouldHave(text(state + " " + city));
+        });
+
+        step("Close submitting form", () -> $("#closeLargeModal").click());
+
+    }
 }
