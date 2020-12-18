@@ -16,6 +16,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.io.File;
 import java.util.Locale;
 
+import static com.codeborne.selenide.Browsers.FIREFOX;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
@@ -27,8 +28,9 @@ public class StudentRegistrationFormTest {
     @BeforeAll
     static void setUp() {
         addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-//        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud:4444/wd/hub/";
         Configuration.startMaximized = true;
+//        Configuration.browser = FIREFOX;
+        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud:4444/wd/hub/";
 
     }
     @AfterEach
